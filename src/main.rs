@@ -1,7 +1,11 @@
 fn main() {
     let mut board = make_board();
 
-    let player = Symbol::X;
+    let player = match rand::thread_rng().gen_range(0,2) {
+        0 => Symbol::O,
+        1 => Symbol::X,
+        _ => panic!("Invalid random player symbol number!")
+    };
 
     loop {
         let result = game_result(&board, &player);
@@ -9,12 +13,12 @@ fn main() {
             break;
         }
         print_board(&board);
-        player_move(&mut board);
+        player_move(&mut board, &player);
         let result = game_result(&board, &player);
         if result!=GameResult::Running {
             break;
         }
-        ai_move(&mut board);
+        ai_move(&mut board, &player);
     }
     print_board(&board);
 
@@ -93,7 +97,7 @@ fn game_result(board: &Board, player: &Symbol) -> GameResult {
     return GameResult::Running;
 }
 
-fn player_move(board: &mut Board) {
+fn player_move(board: &mut Board, player: &Symbol) {
     loop {
         let mut input = String::new();
         std::io::stdin().read_line(&mut input).expect("Error reading string!");
@@ -102,7 +106,7 @@ fn player_move(board: &mut Board) {
             Ok(n) => {
                 if n<=9 && n>=1 {
                     let n = n - 1;
-                    board[(n/3) as usize][(n%3) as usize] = Symbol::X;
+                    board[(n/3) as usize][(n%3) as usize] = *player;
                     return;
                 }
             }
@@ -114,11 +118,11 @@ fn player_move(board: &mut Board) {
 
 use rand::Rng;
 
-fn ai_move(board: &mut Board) {
+fn ai_move(board: &mut Board, player: &Symbol) {
     loop {
         let target = rand::thread_rng().gen_range(0, 9);
         if board[(target/3) as usize][(target%3) as usize] == Symbol::Nil {
-            board[(target/3) as usize][(target%3) as usize] = Symbol::O;
+            board[(target/3) as usize][(target%3) as usize] = Symbol::other(player);
             return;
         }
     }
