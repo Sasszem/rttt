@@ -3,14 +3,22 @@ fn main() {
 
     let player = Symbol::X;
 
-    let mut result = game_result(&board, &player);
-    while result == GameResult::Running {
+    loop {
+        let result = game_result(&board, &player);
+        if result!=GameResult::Running {
+            break;
+        }
         print_board(&board);
         player_move(&mut board);
+        let result = game_result(&board, &player);
+        if result!=GameResult::Running {
+            break;
+        }
         ai_move(&mut board);
-        result = game_result(&board, &player);
     }
     print_board(&board);
+
+    let result = game_result(&board, &player);
     match result {
         GameResult::Won => {
             println!("You won!");
@@ -40,6 +48,14 @@ impl Symbol{
             Symbol::Nil => String::from(" ")
         };
     }
+
+    fn other(s: &Symbol) -> Symbol {
+        return match s {
+            Symbol::X => Symbol::O,
+            Symbol::O => Symbol::X,
+            Symbol::Nil => Symbol::Nil
+        }
+    }
 }
 
 type Board = Vec<Vec<Symbol>>;
@@ -68,7 +84,7 @@ fn game_result(board: &Board, player: &Symbol) -> GameResult {
     if won_by(player, board) {
         return GameResult::Won;
     }
-    if won_by(player, board) {
+    if won_by(&Symbol::other(player), board) {
         return GameResult::Lost;
     }
     if is_draw(board) {
@@ -88,7 +104,7 @@ use rand::Rng;
 
 fn ai_move(board: &mut Board) {
     loop {
-        let target = rand::thread_rng().gen_range(0, 8);
+        let target = rand::thread_rng().gen_range(0, 9);
         if board[(target/3) as usize][(target%3) as usize] == Symbol::Nil {
             board[(target/3) as usize][(target%3) as usize] = Symbol::O;
             return;
