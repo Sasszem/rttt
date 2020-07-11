@@ -96,7 +96,7 @@ fn game_result(board: &Board, player: &Symbol) -> GameResult {
 fn player_move(board: &mut Board) {
     loop {
         let mut input = String::new();
-        std::io::stdin().read_line(&mut input);
+        std::io::stdin().read_line(&mut input).expect("Error reading string!");
         let num = input.trim().parse::<u32>();
         match num {
             Ok(n) => {
