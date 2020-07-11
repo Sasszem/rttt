@@ -94,10 +94,22 @@ fn game_result(board: &Board, player: &Symbol) -> GameResult {
 }
 
 fn player_move(board: &mut Board) {
-    let mut input = String::new();
-    std::io::stdin().read_line(&mut input);
-    let target: u32 = input.trim().parse().expect("Input a number please!");
-    board[(target/3) as usize][(target%3) as usize] = Symbol::X;
+    loop {
+        let mut input = String::new();
+        std::io::stdin().read_line(&mut input);
+        let num = input.trim().parse::<u32>();
+        match num {
+            Ok(n) => {
+                if n<=9 && n>=1 {
+                    let n = n - 1;
+                    board[(n/3) as usize][(n%3) as usize] = Symbol::X;
+                    return;
+                }
+            }
+            _ => {}
+        }
+        println!("Sorry, I did not understand! Please input a number in the range 1-9!");
+    }
 }
 
 use rand::Rng;
