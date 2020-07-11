@@ -28,6 +28,16 @@ enum Symbol {
     Nil
 }
 
+impl Symbol{
+    fn to_str(s: Symbol) -> String {
+        return match s {
+            Symbol::X => String::from("X"),
+            Symbol::O => String::from("O"),
+            Symbol::Nil => String::from(" ")
+        };
+    }
+}
+
 type Board = Vec<Vec<Symbol>>;
 
 fn make_board() -> Board {
@@ -38,23 +48,16 @@ fn make_board() -> Board {
     )
 }
 
+fn print_row(row: &Vec<Symbol>) -> String {
+    return format!("{} | {} | {}", Symbol::to_str(row[0]), Symbol::to_str(row[1]), Symbol::to_str(row[2]));
+}
+
 fn print_board(board: &Board) {
-    let mut strings: Vec<&str> = Vec::new();
-    for row in board {
-        for cell in row {
-            let sym = match cell {
-                Symbol::X => "X",
-                Symbol::O => "O",
-                Symbol::Nil => " "
-            };
-            strings.push(sym);
-        }
-    }
-    println!("{} | {} | {}", strings[0], strings[1], strings[2]);
+    println!("{}", print_row(&board[0]));
     println!("--+---+--");
-    println!("{} | {} | {}", strings[3], strings[4], strings[5]);
+    println!("{}", print_row(&board[1]));
     println!("--+---+--");
-    println!("{} | {} | {}", strings[6], strings[7], strings[8]);
+    println!("{}", print_row(&board[2]));
 }
 
 fn game_result(board: &Board) -> Symbol {
