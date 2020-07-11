@@ -1,21 +1,26 @@
 fn main() {
     let mut board = make_board();
 
-    let mut result = game_result(&board);
-    while result == Symbol::Nil {
+    let player = Symbol::X;
+
+    let mut result = game_result(&board, &player);
+    while result == GameResult::Running {
         print_board(&board);
         player_move(&mut board);
         ai_move(&mut board);
-        result = game_result(&board);
+        result = game_result(&board, &player);
     }
     print_board(&board);
     match result {
-        Symbol::X => {
+        GameResult::Won => {
             println!("You won!");
         },
-        Symbol::O => {
+        GameResult::Lost => {
             println!("Haha loser!");
-        }
+        },
+        GameResult::Draw => {
+            println!("Equally noobs!");
+        },
         _ => {}
     }
 }
@@ -59,14 +64,17 @@ fn print_board(board: &Board) {
     println!("{}", print_row(&board[2]));
 }
 
-fn game_result(board: &Board) -> Symbol {
-    if won_by(Symbol::X, board) {
-        return Symbol::X;
+fn game_result(board: &Board, player: &Symbol) -> GameResult {
+    if won_by(player, board) {
+        return GameResult::Won;
     }
-    if won_by(Symbol::O, board) {
-        return Symbol::O;
+    if won_by(player, board) {
+        return GameResult::Lost;
     }
-    return Symbol::Nil;
+    if is_draw(board) {
+        return GameResult::Draw;
+    }
+    return GameResult::Running;
 }
 
 fn player_move(board: &mut Board) {
@@ -88,25 +96,40 @@ fn ai_move(board: &mut Board) {
     }
 }
 
-fn won_by(s: Symbol, board: &Board) -> bool {
+#[derive(PartialEq)]
+enum GameResult {
+    Won,
+    Lost,
+    Draw,
+    Running
+}
 
+fn is_draw(board: &Board) -> bool {
+    board.iter().filter(|row| {
+        row.iter().filter(|s| {
+            **s != Symbol::Nil
+        }).count() == 3
+    }).count() == 3
+}
+
+fn won_by(s: &Symbol, board: &Board) -> bool {
     println!("Wonby({:?})", s);
     // check rows
-    if board.iter().filter(|row| {row.iter().filter(|sym| {**sym==s}).count() == 3}).count() > 0 {
+    if board.iter().filter(|row| {row.iter().filter(|sym| {*sym==s}).count() == 3}).count() > 0 {
         return true;
     }
 
     for i in 0..3 {
-        if board.iter().map(|row| {row[i]}).filter(|sym| {*sym==s}).count()==3 {
+        if board.iter().map(|row| {row[i]}).filter(|sym| {sym==s}).count()==3 {
             return true;
         }
     }
 
-    if (0..3).map(|i| {board[i][i]}).filter(|sym| {*sym==s}).count()==3 {
+    if (0..3).map(|i| {board[i][i]}).filter(|sym| {sym==s}).count()==3 {
         return true;
     }
 
-    if (0..3).map(|i| {board[i][2-i]}).filter(|sym| {*sym==s}).count()==3 {
+    if (0..3).map(|i| {board[i][2-i]}).filter(|sym| {sym==s}).count()==3 {
         return true;
     }
 
