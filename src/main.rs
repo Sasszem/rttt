@@ -7,8 +7,10 @@ fn main() {
         _ => panic!("Invalid random player symbol number!")
     };
 
+    let ai = RandomAI{};
+
     if player == Symbol::O {
-        ai_move(&mut board, &player);
+        ai.do_move(&mut board, &player);
     }
     println!("You are {}", player.to_str());
 
@@ -23,7 +25,7 @@ fn main() {
         if result!=GameResult::Running {
             break;
         }
-        ai_move(&mut board, &player);
+        ai.do_move(&mut board, &player);
     }
     print_board(&board);
 
@@ -64,6 +66,44 @@ impl Symbol{
             Symbol::O => Symbol::X,
             Symbol::Nil => Symbol::Nil
         }
+    }
+}
+
+trait AI {
+    fn do_move(&self, board: &mut Board, player: &Symbol);
+}
+
+struct RandomAI {}
+
+impl AI for RandomAI {
+    fn do_move(&self, board: &mut Board, player: &Symbol) {
+        loop {
+            let target = rand::thread_rng().gen_range(0, 9);
+            if board[(target/3) as usize][(target%3) as usize] == Symbol::Nil {
+                board[(target/3) as usize][(target%3) as usize] = Symbol::other(player);
+                return;
+            }
+        }
+    }
+}
+
+struct SmarterAI {}
+
+impl AI for SmarterAI {
+    fn do_move(&self, board: &mut Board, player: &Symbol) {
+        // todo: if we are winning, do that move
+        // if player is winning, block it
+        // do random move
+    }
+}
+
+struct SmartAI {}
+
+impl AI for SmartAI {
+    fn do_move(&self, board: &mut Board, player: &Symbol) {
+        // todo: win if can
+        // block if must
+        // pick in priority order: corner, edge, middle
     }
 }
 
@@ -123,15 +163,6 @@ fn player_move(board: &mut Board, player: &Symbol) {
 
 use rand::Rng;
 
-fn ai_move(board: &mut Board, player: &Symbol) {
-    loop {
-        let target = rand::thread_rng().gen_range(0, 9);
-        if board[(target/3) as usize][(target%3) as usize] == Symbol::Nil {
-            board[(target/3) as usize][(target%3) as usize] = Symbol::other(player);
-            return;
-        }
-    }
-}
 
 #[derive(PartialEq)]
 enum GameResult {
