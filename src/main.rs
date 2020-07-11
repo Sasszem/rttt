@@ -1,5 +1,4 @@
 fn main() {
-    println!("Hello, world!");
     let mut board = make_board();
 
     let mut result = game_result(&board);
