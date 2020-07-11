@@ -33,7 +33,7 @@ fn main() {
     }
 }
 
-#[derive(PartialEq, Copy, Clone, Debug)]
+#[derive(PartialEq, Copy, Clone)]
 enum Symbol {
     X,
     O,
@@ -141,7 +141,6 @@ fn is_draw(board: &Board) -> bool {
 }
 
 fn won_by(s: &Symbol, board: &Board) -> bool {
-    println!("Wonby({:?})", s);
     // check rows
     if board.iter().filter(|row| {row.iter().filter(|sym| {*sym==s}).count() == 3}).count() > 0 {
         return true;
