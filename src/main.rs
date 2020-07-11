@@ -1,35 +1,36 @@
 fn main() {
     let mut board = make_board();
 
-    let player = match rand::thread_rng().gen_range(0,2) {
+    let player_sym = match rand::thread_rng().gen_range(0,2) {
         0 => Symbol::O,
         1 => Symbol::X,
         _ => panic!("Invalid random player symbol number!")
     };
 
     let ai = RandomAI{};
+    let player = Player{};
 
-    if player == Symbol::O {
-        ai.do_move(&mut board, &player);
+    if player_sym == Symbol::O {
+        ai.do_move(&mut board, &player_sym);
     }
-    println!("You are {}", player.to_str());
+    println!("You are {}", player_sym.to_str());
 
     loop {
-        let result = game_result(&board, &player);
+        let result = game_result(&board, &player_sym);
         if result!=GameResult::Running {
             break;
         }
         print_board(&board);
-        player_move(&mut board, &player);
-        let result = game_result(&board, &player);
+        player.do_move(&mut board, &player_sym);
+        let result = game_result(&board, &player_sym);
         if result!=GameResult::Running {
             break;
         }
-        ai.do_move(&mut board, &player);
+        ai.do_move(&mut board, &player_sym);
     }
     print_board(&board);
 
-    let result = game_result(&board, &player);
+    let result = game_result(&board, &player_sym);
     match result {
         GameResult::Won => {
             println!("You won!");
@@ -107,6 +108,29 @@ impl AI for SmartAI {
     }
 }
 
+struct Player {}
+
+impl AI for Player {
+    fn do_move(&self, board: &mut Board, player: &Symbol) {
+        loop {
+            let mut input = String::new();
+            std::io::stdin().read_line(&mut input).expect("Error reading string!");
+            let num = input.trim().parse::<u32>();
+            match num {
+                Ok(n) => {
+                    if n<=9 && n>=1 {
+                        let n = n - 1;
+                        board[(n/3) as usize][(n%3) as usize] = *player;
+                        return;
+                    }
+                }
+                _ => {}
+            }
+            println!("Sorry, I did not understand! Please input a number in the range 1-9!");
+        }
+    }
+}
+
 type Board = Vec<Vec<Symbol>>;
 
 fn make_board() -> Board {
@@ -140,25 +164,6 @@ fn game_result(board: &Board, player: &Symbol) -> GameResult {
         return GameResult::Draw;
     }
     return GameResult::Running;
-}
-
-fn player_move(board: &mut Board, player: &Symbol) {
-    loop {
-        let mut input = String::new();
-        std::io::stdin().read_line(&mut input).expect("Error reading string!");
-        let num = input.trim().parse::<u32>();
-        match num {
-            Ok(n) => {
-                if n<=9 && n>=1 {
-                    let n = n - 1;
-                    board[(n/3) as usize][(n%3) as usize] = *player;
-                    return;
-                }
-            }
-            _ => {}
-        }
-        println!("Sorry, I did not understand! Please input a number in the range 1-9!");
-    }
 }
 
 use rand::Rng;
