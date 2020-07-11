@@ -1,5 +1,5 @@
 fn main() {
-    let mut board = make_board();
+    let mut board = Board::new();
 
     let player_sym = match rand::thread_rng().gen_range(0,2) {
         0 => Symbol::O,
@@ -11,26 +11,26 @@ fn main() {
     let player = Player{};
 
     if player_sym == Symbol::O {
-        ai.do_move(&mut board, &player_sym);
+        ai.do_move(&mut board, player_sym);
     }
     println!("You are {}", player_sym.to_str());
 
     loop {
-        let result = game_result(&board, &player_sym);
+        let result = board.result(player_sym);
         if result!=GameResult::Running {
             break;
         }
-        print_board(&board);
-        player.do_move(&mut board, &player_sym);
-        let result = game_result(&board, &player_sym);
+        board.print();
+        player.do_move(&mut board, player_sym);
+        let result = board.result(player_sym);
         if result!=GameResult::Running {
             break;
         }
-        ai.do_move(&mut board, &player_sym);
+        ai.do_move(&mut board, player_sym);
     }
-    print_board(&board);
+    board.print();
 
-    let result = game_result(&board, &player_sym);
+    let result = board.result(player_sym);
     match result {
         GameResult::Won => {
             println!("You won!");
@@ -61,8 +61,8 @@ impl Symbol{
         };
     }
 
-    fn other(s: &Symbol) -> Symbol {
-        return match s {
+    fn other(&self) -> Symbol {
+        return match self {
             Symbol::X => Symbol::O,
             Symbol::O => Symbol::X,
             Symbol::Nil => Symbol::Nil
@@ -71,17 +71,17 @@ impl Symbol{
 }
 
 trait AI {
-    fn do_move(&self, board: &mut Board, player: &Symbol);
+    fn do_move(&self, board: &mut Board, player: Symbol);
 }
 
 struct RandomAI {}
 
 impl AI for RandomAI {
-    fn do_move(&self, board: &mut Board, player: &Symbol) {
+    fn do_move(&self, board: &mut Board, player: Symbol) {
         loop {
             let target = rand::thread_rng().gen_range(0, 9);
-            if board[(target/3) as usize][(target%3) as usize] == Symbol::Nil {
-                board[(target/3) as usize][(target%3) as usize] = Symbol::other(player);
+            if board.get(target/3, target%3) == Symbol::Nil {
+                board.set(target/3, target%3, player.other());
                 return;
             }
         }
@@ -91,7 +91,7 @@ impl AI for RandomAI {
 struct SmarterAI {}
 
 impl AI for SmarterAI {
-    fn do_move(&self, board: &mut Board, player: &Symbol) {
+    fn do_move(&self, board: &mut Board, player: Symbol) {
         // todo: if we are winning, do that move
         // if player is winning, block it
         // do random move
@@ -101,7 +101,7 @@ impl AI for SmarterAI {
 struct SmartAI {}
 
 impl AI for SmartAI {
-    fn do_move(&self, board: &mut Board, player: &Symbol) {
+    fn do_move(&self, board: &mut Board, player: Symbol) {
         // todo: win if can
         // block if must
         // pick in priority order: corner, edge, middle
@@ -111,7 +111,7 @@ impl AI for SmartAI {
 struct Player {}
 
 impl AI for Player {
-    fn do_move(&self, board: &mut Board, player: &Symbol) {
+    fn do_move(&self, board: &mut Board, player: Symbol) {
         loop {
             let mut input = String::new();
             std::io::stdin().read_line(&mut input).expect("Error reading string!");
@@ -120,7 +120,7 @@ impl AI for Player {
                 Ok(n) => {
                     if n<=9 && n>=1 {
                         let n = n - 1;
-                        board[(n/3) as usize][(n%3) as usize] = *player;
+                        board.set(n/3, n%3, player);
                         return;
                     }
                 }
@@ -131,43 +131,90 @@ impl AI for Player {
     }
 }
 
-type Board = Vec<Vec<Symbol>>;
 
-fn make_board() -> Board {
-    vec!(
-        vec!(Symbol::Nil, Symbol::Nil, Symbol::Nil),
-        vec!(Symbol::Nil, Symbol::Nil, Symbol::Nil),
-        vec!(Symbol::Nil, Symbol::Nil, Symbol::Nil)
-    )
+struct Board {
+    board: Vec<Vec<Symbol>>, 
 }
 
-fn print_row(row: &Vec<Symbol>) -> String {
-    return format!("{} | {} | {}", row[0].to_str(), row[1].to_str(), row[2].to_str());
-}
+impl Board {
+    fn new() -> Board {
+        Board{
+            board: vec!(
+                vec!(Symbol::Nil, Symbol::Nil, Symbol::Nil),
+                vec!(Symbol::Nil, Symbol::Nil, Symbol::Nil),
+                vec!(Symbol::Nil, Symbol::Nil, Symbol::Nil)
+            )
+        }
+    }
 
-fn print_board(board: &Board) {
-    println!("{}", print_row(&board[0]));
-    println!("--+---+--");
-    println!("{}", print_row(&board[1]));
-    println!("--+---+--");
-    println!("{}", print_row(&board[2]));
-}
+    
+    fn format_row(row: &Vec<Symbol>) -> String {
+        return format!("{} | {} | {}", row[0].to_str(), row[1].to_str(), row[2].to_str());
+    }
 
-fn game_result(board: &Board, player: &Symbol) -> GameResult {
-    if won_by(player, board) {
-        return GameResult::Won;
+    fn print(&self) {
+        println!("{}", Board::format_row(&self.board[2]));
+        println!("--+---+--");
+        println!("{}", Board::format_row(&self.board[1]));
+        println!("--+---+--");
+        println!("{}", Board::format_row(&self.board[0]));
     }
-    if won_by(&Symbol::other(player), board) {
-        return GameResult::Lost;
+    
+    fn result(&self, player: Symbol) -> GameResult {
+        if self.won_by(player) {
+            return GameResult::Won;
+        }
+        if self.won_by(player.other()) {
+            return GameResult::Lost;
+        }
+        if self.is_draw() {
+            return GameResult::Draw;
+        }
+        return GameResult::Running;
     }
-    if is_draw(board) {
-        return GameResult::Draw;
+
+    fn is_draw(&self) -> bool {
+        self.board.iter().filter(|row| {
+            row.iter().filter(|s| {
+                **s != Symbol::Nil
+            }).count() == 3
+        }).count() == 3
     }
-    return GameResult::Running;
+    
+    fn won_by(&self, s: Symbol) -> bool {
+        // check rows
+        if self.board.iter().filter(|row| {row.iter().filter(|sym| {**sym==s}).count() == 3}).count() > 0 {
+            return true;
+        }
+    
+        for i in 0..3 {
+            if self.board.iter().map(|row| {row[i]}).filter(|sym| {*sym==s}).count()==3 {
+                return true;
+            }
+        }
+    
+        if (0..3).map(|i| {self.board[i][i]}).filter(|sym| {*sym==s}).count()==3 {
+            return true;
+        }
+    
+        if (0..3).map(|i| {self.board[i][2-i]}).filter(|sym| {*sym==s}).count()==3 {
+            return true;
+        }
+    
+        return false;
+    }
+
+    fn get(&self, i:u32, j:u32) -> Symbol {
+        return self.board[i as usize][j as usize];
+    }
+
+    fn set(&mut self, i:u32, j:u32, s: Symbol) {
+        println!("Board.set({}, {}, {})", i, j, s.to_str());
+        self.board[i as usize][j as usize] = s;
+    }
 }
 
 use rand::Rng;
-
 
 #[derive(PartialEq)]
 enum GameResult {
@@ -177,33 +224,4 @@ enum GameResult {
     Running
 }
 
-fn is_draw(board: &Board) -> bool {
-    board.iter().filter(|row| {
-        row.iter().filter(|s| {
-            **s != Symbol::Nil
-        }).count() == 3
-    }).count() == 3
-}
 
-fn won_by(s: &Symbol, board: &Board) -> bool {
-    // check rows
-    if board.iter().filter(|row| {row.iter().filter(|sym| {*sym==s}).count() == 3}).count() > 0 {
-        return true;
-    }
-
-    for i in 0..3 {
-        if board.iter().map(|row| {row[i]}).filter(|sym| {sym==s}).count()==3 {
-            return true;
-        }
-    }
-
-    if (0..3).map(|i| {board[i][i]}).filter(|sym| {sym==s}).count()==3 {
-        return true;
-    }
-
-    if (0..3).map(|i| {board[i][2-i]}).filter(|sym| {sym==s}).count()==3 {
-        return true;
-    }
-
-    return false;
-}
