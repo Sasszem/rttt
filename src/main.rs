@@ -97,17 +97,17 @@ fn won_by(s: Symbol, board: &Board) -> bool {
         return true;
     }
 
-    for i in 0..2 {
+    for i in 0..3 {
         if board.iter().map(|row| {row[i]}).filter(|sym| {*sym==s}).count()==3 {
             return true;
         }
     }
 
-    if (0..2).map(|i| {board[i][i]}).filter(|sym| {*sym==s}).count()==3 {
+    if (0..3).map(|i| {board[i][i]}).filter(|sym| {*sym==s}).count()==3 {
         return true;
     }
 
-    if (0..2).map(|i| {board[i][2-i]}).filter(|sym| {*sym==s}).count()==3 {
+    if (0..3).map(|i| {board[i][2-i]}).filter(|sym| {*sym==s}).count()==3 {
         return true;
     }
 
