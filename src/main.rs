@@ -7,6 +7,11 @@ fn main() {
         _ => panic!("Invalid random player symbol number!")
     };
 
+    if player == Symbol::O {
+        ai_move(&mut board, &player);
+    }
+    println!("You are {}", player.to_str());
+
     loop {
         let result = game_result(&board, &player);
         if result!=GameResult::Running {
@@ -45,8 +50,8 @@ enum Symbol {
 }
 
 impl Symbol{
-    fn to_str(s: Symbol) -> String {
-        return match s {
+    fn to_str(&self) -> String {
+        return match self {
             Symbol::X => String::from("X"),
             Symbol::O => String::from("O"),
             Symbol::Nil => String::from(" ")
@@ -73,7 +78,7 @@ fn make_board() -> Board {
 }
 
 fn print_row(row: &Vec<Symbol>) -> String {
-    return format!("{} | {} | {}", Symbol::to_str(row[0]), Symbol::to_str(row[1]), Symbol::to_str(row[2]));
+    return format!("{} | {} | {}", row[0].to_str(), row[1].to_str(), row[2].to_str());
 }
 
 fn print_board(board: &Board) {
