@@ -50,15 +50,26 @@ impl AI for Player {
             let num = input.trim().parse::<u32>();
             match num {
                 Ok(n) => {
-                    if n<=9 && n>=1 {
-                        let n = n - 1;
-                        board.set(n/3, n%3, player);
-                        return;
+                    match n {
+                        1..=9 => {
+                            let n = n - 1;
+                            if board.get(n/3, n%3)==Symbol::Nil {
+                                board.set(n/3, n%3, player);
+                                return;
+                            } else {
+                                println!("Sorry, that square is already occupied!");
+                            }
+                            
+                        },
+                        _ => {
+                            println!("Please only input numbers in the 1-9 range!");
+                        }
                     }
                 }
-                _ => {}
+                _ => {
+                    println!("Sorry, I did not understand! Please input a number!");
+                }
             }
-            println!("Sorry, I did not understand! Please input a number in the range 1-9!");
         }
     }
 }
