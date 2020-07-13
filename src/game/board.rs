@@ -87,7 +87,6 @@ impl Board {
     }
 
     pub fn set(&mut self, i:u32, j:u32, s: Symbol) {
-        println!("Board.set({}, {}, {})", i, j, s.to_str());
         self.board[i as usize][j as usize] = s;
     }
 }
