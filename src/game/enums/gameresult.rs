@@ -3,5 +3,5 @@ pub enum GameResult {
     Won,
     Lost,
     Draw,
-    Running
+    Running,
 }

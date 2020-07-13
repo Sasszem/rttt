@@ -1,7 +1,7 @@
 mod game {
     mod ai;
-    mod enums;
     mod board;
+    mod enums;
     mod game;
 
     pub use game::Game;
