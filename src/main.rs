@@ -1,14 +1,8 @@
-fn main() {
-    let mut game = Game::new();
-    game.run();
-}
-mod symbol;
-mod ai;
-mod board;
-mod gameresult;
-mod game;
-use crate::game::Game;
+use rttt::run_game;
 
+fn main() {
+    run_game();
+}
 
 // todo: remove debug print
 // todo: do not allow overwrites

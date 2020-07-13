@@ -1,5 +1,5 @@
-use super::symbol::Symbol;
-use super::gameresult::GameResult;
+use super::enums::Symbol;
+use super::enums::GameResult;
 
 pub struct Board {
     board: Vec<Vec<Symbol>>, 

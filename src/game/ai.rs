@@ -1,5 +1,5 @@
 use super::board::Board;
-use super::symbol::Symbol;
+use super::enums::Symbol;
 use rand::Rng;
 
 pub trait AI {

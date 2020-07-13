@@ -1,9 +1,9 @@
-use crate::board::Board;
-use crate::symbol::Symbol;
-use crate::ai;
-use crate::ai::AI;
-use crate::gameresult::GameResult;
-use crate::ai::Player;
+use super::board::Board;
+use super::enums::Symbol;
+use super::ai;
+use super::ai::AI;
+use super::enums::GameResult;
+use super::ai::Player;
 
 pub struct Game {
     ai: Box<dyn AI>,
