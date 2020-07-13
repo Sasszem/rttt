@@ -4,5 +4,6 @@ fn main() {
     run_game();
 }
 
-// todo: remove debug print
-// todo: do not allow overwrites
+// todo: split up ai.rs
+// todo: refactor game.rs
+// todo: implement AIs
