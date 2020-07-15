@@ -1,8 +1,7 @@
-use rttt::run_game;
+use rttt::game::run;
 
 fn main() {
-    run_game();
+    run();
 }
 
-// todo: refactor game.rs
 // todo: format code!

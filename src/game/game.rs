@@ -5,57 +5,65 @@ use super::board::Board;
 use super::enums::GameResult;
 use super::enums::Symbol;
 
-pub struct Game {
-    ai: Box<dyn AI>,
-    board: Board,
-    player: Symbol,
-}
+pub fn run() {
+    
+    // variable initializations
+    let mut board = Board::new();
+    let psym = Symbol::random();
+    let ai = ai::get_ai();
+    let player = Player {};
 
-impl Game {
-    pub fn new() -> Game {
-        Game {
-            ai: ai::get_ai(),
-            board: Board::new(),
-            player: Symbol::random(),
-        }
+
+    // do first move by AI
+    if psym == Symbol::O {
+        ai.do_move(&mut board, psym);
     }
 
-    pub fn run(&mut self) {
-        if self.player == Symbol::O {
-            self.ai.do_move(&mut self.board, self.player);
+    // print symbol message
+    println!("You are {}", psym.to_str());
+
+
+    // game loop
+    loop {
+        // check results
+        let result = board.result(psym);
+        if result != GameResult::Running {
+            break;
+        }
+    
+        // print board
+        board.print();
+        
+        // player move
+        player.do_move(&mut board, psym);
+        
+        // check result again
+        let result = board.result(psym);
+        if result != GameResult::Running {
+            break;
         }
 
-        println!("You are {}", self.player.to_str());
+        // do AI move
+        ai.do_move(&mut board, psym);
+    }
+    // game loop ends here
+    // everythings after this is after win / lose
 
-        let player = Player {};
+    board.print();
 
-        loop {
-            let result = self.board.result(self.player);
-            if result != GameResult::Running {
-                break;
-            }
-            self.board.print();
-            player.do_move(&mut self.board, self.player);
-            let result = self.board.result(self.player);
-            if result != GameResult::Running {
-                break;
-            }
-            self.ai.do_move(&mut self.board, self.player);
+
+    // print game result
+    let result = board.result(psym);
+    match result {
+        GameResult::Won => {
+            println!("You won!");
         }
-        self.board.print();
-
-        let result = self.board.result(self.player);
-        match result {
-            GameResult::Won => {
-                println!("You won!");
-            }
-            GameResult::Lost => {
-                println!("Haha loser!");
-            }
-            GameResult::Draw => {
-                println!("Equally noobs!");
-            }
-            _ => {}
+        GameResult::Lost => {
+            println!("Haha loser!");
         }
+        GameResult::Draw => {
+            println!("Equally noobs!");
+        }
+        _ => {}
     }
 }
