@@ -4,6 +4,16 @@ use rand::Rng;
 
 pub trait AI {
     fn do_move(&self, board: &mut Board, player: Symbol);
+
+    fn place_random(&self, board: &mut Board, sym: Symbol) {
+        loop {
+            let target = rand::thread_rng().gen_range(0, 9);
+            if board.get(target / 3, target % 3) == Symbol::Nil {
+                board.set(target / 3, target % 3, sym);
+                return;
+            }
+        }
+    }
 }
 
 mod random;
