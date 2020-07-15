@@ -4,6 +4,6 @@ fn main() {
     run_game();
 }
 
-// todo: split up ai.rs
 // todo: refactor game.rs
 // todo: implement AIs
+// todo: format code!
