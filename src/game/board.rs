@@ -109,6 +109,39 @@ impl Board {
         return false;
     }
 
+    pub fn can_win(&self, symbol: Symbol, i: u32, j:u32) -> bool {
+        // check for Nil
+        if self.get(i, j)!=Symbol::Nil {
+            return false;
+        }
+
+        // check row
+        if self.board[i as usize].iter().filter(|x| {**x==symbol}).count() == 2 {
+            return true;
+        }
+
+        // check column
+        if self.board.iter().map(|row| {row[j as usize]}).filter(|x| {*x==symbol}).count() == 2 {
+            return true;
+        }
+
+        // check diag. 1 (/)
+        if i==j {
+            if (0..3).map(|x| {self.get(x, x)}).filter(|x| {*x==symbol}).count() == 2 {
+                return true;
+            }
+        }
+
+        // check diag. 2 (\)
+        if i+j==2 {
+            if (0..3).map(|x| {self.get(x, 2-x)}).filter(|x| {*x==symbol}).count() == 2 {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     pub fn get(&self, i: u32, j: u32) -> Symbol {
         return self.board[i as usize][j as usize];
     }
