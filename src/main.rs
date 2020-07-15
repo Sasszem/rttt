@@ -5,5 +5,4 @@ fn main() {
 }
 
 // todo: refactor game.rs
-// todo: implement AIs
 // todo: format code!

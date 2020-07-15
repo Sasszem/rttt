@@ -1,7 +1,6 @@
-use super::AI;
 use super::super::board::Board;
 use super::super::enums::Symbol;
-
+use super::AI;
 
 pub struct RandomAI {}
 
