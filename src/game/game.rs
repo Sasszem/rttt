@@ -1,3 +1,7 @@
+//! Implement the main game loop
+//! 
+//! No need to import other modules in order to run the game
+
 use super::ai;
 use super::ai::Player;
 use super::ai::AI;
@@ -5,6 +9,10 @@ use super::board::Board;
 use super::enums::GameResult;
 use super::enums::Symbol;
 
+
+/// Game mainloop
+/// 
+/// Handles object creation, game loop, result checking and printing
 pub fn run() {
     
     // variable initializations

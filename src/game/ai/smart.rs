@@ -1,8 +1,18 @@
+//! Hard AI
+
 use super::super::board::Board;
 use super::super::enums::Symbol;
 use super::AI;
 use rand::Rng;
 
+/// Hard AI
+/// 
+/// Strategy:
+/// - winning move if there is one
+/// - blocking player's winning move
+/// - random corner
+/// - random edge
+/// - center
 pub struct SmartAI {}
 
 impl AI for SmartAI {
@@ -66,5 +76,8 @@ impl AI for SmartAI {
     }
 }
 
+/// List of coordinates of corners
 const CORNERS: [(u32, u32); 4] = [(0, 0), (0, 2), (2, 0), (2, 2)];
+
+/// List of coordinates of edges
 const EDGES: [(u32, u32); 4] = [(0, 1), (1, 0), (1, 2), (2, 1)];

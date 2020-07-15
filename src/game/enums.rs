@@ -1,3 +1,5 @@
+//! Common enums
+
 mod gameresult;
 mod symbol;
 
