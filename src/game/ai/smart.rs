@@ -6,7 +6,7 @@ use super::AI;
 use rand::Rng;
 
 /// Hard AI
-/// 
+///
 /// Strategy:
 /// - winning move if there is one
 /// - blocking player's winning move

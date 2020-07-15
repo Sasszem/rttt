@@ -5,7 +5,7 @@ use super::super::enums::Symbol;
 use super::AI;
 
 /// Easy AI
-/// 
+///
 /// Always places at random
 pub struct RandomAI {}
 

@@ -5,7 +5,7 @@ use super::super::enums::Symbol;
 use super::AI;
 
 /// Player AI
-/// 
+///
 /// A special AI type for the player.
 /// Does a move based on player input
 pub struct Player {}
@@ -19,7 +19,7 @@ impl AI for Player {
             std::io::stdin()
                 .read_line(&mut input)
                 .expect("Error reading string!");
-            
+
             // Parse number and handle errors
             let num = input.trim().parse::<u32>();
             match num {

@@ -19,9 +19,9 @@ impl Symbol {
     }
 
     /// Return the other Symbol
-    /// 
+    ///
     /// Return `X` for `O`, and `O` for `X`
-    /// 
+    ///
     /// Returns `Nil` for `Nil`
     pub fn other(s: Symbol) -> Symbol {
         return match s {

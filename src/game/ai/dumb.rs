@@ -5,9 +5,9 @@ use super::super::enums::Symbol;
 use super::AI;
 
 /// Medium AI
-/// 
+///
 /// This AI wants to win badly
-/// 
+///
 /// It will do the winning move if possible
 /// and a random one if not.
 pub struct DumbAI {}

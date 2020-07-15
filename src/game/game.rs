@@ -1,5 +1,5 @@
 //! Implement the main game loop
-//! 
+//!
 //! No need to import other modules in order to run the game
 
 use super::ai;
@@ -9,18 +9,15 @@ use super::board::Board;
 use super::enums::GameResult;
 use super::enums::Symbol;
 
-
 /// Game mainloop
-/// 
+///
 /// Handles object creation, game loop, result checking and printing
 pub fn run() {
-    
     // variable initializations
     let mut board = Board::new();
     let psym = Symbol::random();
     let ai = ai::get_ai();
     let player = Player {};
-
 
     // do first move by AI
     if psym == Symbol::O {
@@ -30,7 +27,6 @@ pub fn run() {
     // print symbol message
     println!("You are {}", psym.to_str());
 
-
     // game loop
     loop {
         // check results
@@ -38,13 +34,13 @@ pub fn run() {
         if result != GameResult::Running {
             break;
         }
-    
+
         // print board
         board.print();
-        
+
         // player move
         player.do_move(&mut board, psym);
-        
+
         // check result again
         let result = board.result(psym);
         if result != GameResult::Running {
@@ -58,7 +54,6 @@ pub fn run() {
     // everythings after this is after win / lose
 
     board.print();
-
 
     // print game result
     let result = board.result(psym);

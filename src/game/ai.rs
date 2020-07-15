@@ -4,20 +4,19 @@ use super::board::Board;
 use super::enums::Symbol;
 use rand::Rng;
 
-
 /// AI trait defines common AI behaviour
 pub trait AI {
     /// Do a single move
-    /// 
+    ///
     /// Must be implemented
     fn do_move(&self, board: &mut Board, player: Symbol);
 
     /// Place a symbol randomly
-    /// 
+    ///
     /// Only places to free (`Symbol::Nil`) squares
-    /// 
+    ///
     /// ## Warning
-    /// 
+    ///
     /// Can hang up a program via an infinite loop if `board` is fully filled!
     fn place_random(&self, board: &mut Board, sym: Symbol) {
         loop {
@@ -41,7 +40,7 @@ mod player;
 pub use self::player::Player;
 
 /// Get an AI based on user input
-/// 
+///
 /// Shows select menu, and return an AI implementation
 pub fn get_ai() -> Box<dyn AI> {
     //  print menu
@@ -57,7 +56,7 @@ pub fn get_ai() -> Box<dyn AI> {
         .read_line(&mut line)
         .expect("Error: could not read user input!");
     let mut choice: u32 = line.trim().parse().unwrap_or(0);
-    
+
     // pick random on default or 0
     if choice == 0 || choice > 3 {
         choice = rand::thread_rng().gen_range(1, 4);

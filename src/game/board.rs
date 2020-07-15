@@ -40,7 +40,7 @@ impl Board {
     }
 
     /// Calculate result for a given symbol
-    /// 
+    ///
     /// If game is not won, lost or a draw, then it's still in progress
     /// (e.g running)
     pub fn result(&self, player: Symbol) -> GameResult {
@@ -68,9 +68,8 @@ impl Board {
             == 3
     }
 
-
     /// Check if the board is won by a given symbol
-    /// 
+    ///
     /// Checks rows, columns and diagonals
     fn won_by(&self, s: Symbol) -> bool {
         // check rows
@@ -122,7 +121,7 @@ impl Board {
     }
 
     /// Check if the symbol can win the game on the square (i, j)
-    /// 
+    ///
     /// Ignores non-nil cells (so it's safe to blindly call it without checks)
     pub fn can_win(&self, symbol: Symbol, i: u32, j: u32) -> bool {
         // check for Nil
@@ -185,7 +184,7 @@ impl Board {
     }
 
     /// Set a cell
-    /// 
+    ///
     /// WARNING! It blindly overrides, so check for Nil before calling!
     pub fn set(&mut self, i: u32, j: u32, s: Symbol) {
         self.board[i as usize][j as usize] = s;
